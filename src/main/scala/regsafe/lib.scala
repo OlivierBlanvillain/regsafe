@@ -264,14 +264,15 @@ object Regex {
   def quote(text: String): String = Pattern quote text
   def quoteReplacement(text: String): String = Matcher quoteReplacement text
 
-  import compiletime.ops.string.{Substring, Length}
+  import compiletime.ops.string.{Substring, Length, Matches}
   import compiletime.ops.int.{+, -, Max}
 
   type CharAt[R <: String, At <: Int] =
     Substring[R, At, At + 1]
 
   type Compile[R <: String] =
-    Reverse[Loop[R, 0, Length[R], EmptyTuple, IsPiped[R, 0, Length[R], 0]]]
+    Matches["", R] match
+      case _ => Reverse[Loop[R, 0, Length[R], EmptyTuple, IsPiped[R, 0, Length[R], 0]]]
 
   type Loop[R <: String, Lo <: Int, Hi <: Int, Acc <: Tuple, Opt <: Int] <: Tuple =
     Lo match
