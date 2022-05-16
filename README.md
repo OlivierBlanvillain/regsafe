@@ -1,12 +1,17 @@
-## Type-Safe Regular Expressions
+# Type-Safe Regular Expressions [![Maven](https://img.shields.io/maven-central/v/in.nvilla/regsafe_3.svg?label=maven)](https://repo1.maven.org/maven2/in/nvilla/regsafe_3/)
 
 Regsafe is a regular expression library which provides a type-safe and null-safe mechanism for capturing group extraction.
 The implementation makes extensive use of [match types](https://docs.scala-lang.org/scala3/reference/new-types/match-types.html) to statically analyze regular expressions during type checking.
 The Regsafe API mimics Scala's original regex APIs and is intended to be usable as a drop-in replacement.
 
+
 The original implementation of this library is thoroughly documented in a [Scala Symposium paper](sigplan.pdf).
 
-## The Goodies
+```scala
+"in.nvilla" %% "regsafe" % "0.0.0"
+```
+
+# The Goodies
 
 ### Type safety
 
