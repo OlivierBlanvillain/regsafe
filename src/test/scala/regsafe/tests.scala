@@ -4,7 +4,6 @@ import org.junit.Test
 import org.junit.Assert._
 import scala.annotation.experimental
 
-@experimental
 class Tests {
   @Test def QT3TS: Unit = {
     val r1 = Regex("((((((((((a))))))))))"); "a" match { case r1(g0, g1, g2, g3, g4, g5, g6, g7, g8, g9) => assert((g0, g1, g2, g3, g4, g5, g6, g7, g8, g9) == ("a", "a", "a", "a", "a", "a", "a", "a", "a", "a")) }

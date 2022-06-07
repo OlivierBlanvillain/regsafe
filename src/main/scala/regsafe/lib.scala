@@ -1,13 +1,11 @@
 package regsafe
 
 import java.util.regex.{Pattern, Matcher}
-import scala.annotation.experimental
 import scala.collection.AbstractIterator
 import scala.util.matching.Regex.MatchData
 
 // Based on 2.13.6's implementation of scala.util.matching.Regex
 
-@experimental
 class Regex[P] private[regsafe](val pattern: Pattern, groupNames: String*) extends Serializable { outer =>
 
   import Regex._
@@ -98,13 +96,11 @@ class Regex[P] private[regsafe](val pattern: Pattern, groupNames: String*) exten
   override def toString: String = regex
 }
 
-@experimental
 trait UnanchoredRegex[P] extends Regex[P] {
   override protected def runMatcher(m: Matcher): Boolean = m.find()
   override def unanchored: UnanchoredRegex[P] = this
 }
 
-@experimental
 object Regex {
   def apply[R <: String & Singleton](regex: R): Regex[Compile[R]] =
     new Regex(regex)
