@@ -1,7 +1,7 @@
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(List(
-  scalaVersion := "3.1.2-RC1",
+  scalaVersion := "3.2.0-RC1",
   organization := "in.nvilla",
   licenses := Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
   homepage := Some(url("https://github.com/OlivierBlanvillain/regsafe")),
