@@ -408,12 +408,12 @@ class Tests {
 
   @Test def groupsMatching(): Unit = {
     val Date = Regex("""(\d+)/(\d+)/(\d+)""")
-    for (Regex.Groups(a, b, c) <- Date findFirstMatchIn "1/1/2001 marks the start of the millennium. 31/12/2000 doesn't.") {
+    for (case Regex.Groups(a, b, c) <- Date findFirstMatchIn "1/1/2001 marks the start of the millennium. 31/12/2000 doesn't.") {
       assertEquals("1", a)
       assertEquals("1", b)
       assertEquals("2001", c)
     }
-    for (Regex.Groups(a, b, c) <- Date.findAllIn("1/1/2001 marks the start of the millennium. 31/12/2000 doesn't.").matchData) {
+    for (case Regex.Groups(a, b, c) <- Date.findAllIn("1/1/2001 marks the start of the millennium. 31/12/2000 doesn't.").matchData) {
       assertTrue(a == "1" || a == "31")
       assertTrue(b == "1" || b == "12")
       assertTrue(c == "2001" || c == "2000")
@@ -439,11 +439,11 @@ class Tests {
     val t = "Last modified 2011-07-15"
     val p1 = Regex("""(\d\d\d\d)-(\d\d)-(\d\d)""")
     val y1: Option[String] = for {
-      p1(year, month, day) <- p1.findFirstIn(t)
+      case p1(year, month, day) <- p1.findFirstIn(t)
     } yield year
     assertEquals(Some("2011"), y1)
     val y2: Option[String] = for {
-      p1(year, month, day) <- p1.findFirstMatchIn(t)
+      case p1(year, month, day) <- p1.findFirstMatchIn(t)
     } yield year
     assertEquals(Some("2011"), y2)
   }
