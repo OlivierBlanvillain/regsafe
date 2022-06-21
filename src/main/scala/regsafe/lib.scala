@@ -260,11 +260,8 @@ object Regex {
   def quote(text: String): String = Pattern quote text
   def quoteReplacement(text: String): String = Matcher quoteReplacement text
 
-  import compiletime.ops.string.{Substring, Length, Matches}
+  import compiletime.ops.string.{Substring, Length, Matches, CharAt}
   import compiletime.ops.int.{+, -, Max}
-
-  type CharAt[R <: String, At <: Int] =
-    Substring[R, At, At + 1]
 
   type Compile[R <: String] =
     Matches["", R] match
@@ -274,12 +271,12 @@ object Regex {
     Lo match
       case Hi => Acc
       case _  => CharAt[R, Lo] match
-        case "\\" => CharAt[R, Lo + 1] match
-          case "Q" => Loop[R, ToClosingQE[R, Lo + 2], Hi, Acc, Opt]
+        case '\\' => CharAt[R, Lo + 1] match
+          case 'Q' => Loop[R, ToClosingQE[R, Lo + 2], Hi, Acc, Opt]
           case _ => Loop[R, Lo + 2, Hi, Acc, Opt]
-        case "[" => Loop[R, ToClosingBracket[R, Lo + 1, 0], Hi, Acc, Opt]
-        case ")" => Loop[R, Lo + 1, Hi, Acc, Max[0, Opt - 1]]
-        case "(" => Opt match
+        case '[' => Loop[R, ToClosingBracket[R, Lo + 1, 0], Hi, Acc, Opt]
+        case ')' => Loop[R, Lo + 1, Hi, Acc, Max[0, Opt - 1]]
+        case '(' => Opt match
           case 0 => IsMarked[R, ToClosingParenthesis[R, Lo + 1, 0], Hi] match
             case true => IsCapturing[R, Lo + 1] match
               case false => Loop[R, Lo + 1, Hi, Acc, 1]
@@ -294,9 +291,9 @@ object Regex {
 
   type IsCapturing[R <: String, At <: Int] <: Boolean =
     CharAt[R, At] match
-      case "?" => CharAt[R, At + 1] match
-        case "<" => CharAt[R, At + 2] match
-          case "=" | "!" => false
+      case '?' => CharAt[R, At + 1] match
+        case '<' => CharAt[R, At + 2] match
+          case '=' | '!' => false
           case _ => true
         case _ => false
       case _ => true
@@ -305,9 +302,9 @@ object Regex {
     At match
       case Hi => false
       case _ => CharAt[R, At] match
-        case "?" | "*" => true
-        case "{" => CharAt[R, At + 1] match
-          case "0" => true
+        case '?' | '*' => true
+        case '{' => CharAt[R, At + 1] match
+          case '0' => true
           case _ => false
         case _ => false
 
@@ -315,42 +312,42 @@ object Regex {
     At match
       case Hi => 0
       case _ => CharAt[R, At] match
-        case "\\" => CharAt[R, At + 1] match
-          case "Q" => IsPiped[R, ToClosingQE[R, At + 2], Hi, Lvl]
+        case '\\' => CharAt[R, At + 1] match
+          case 'Q' => IsPiped[R, ToClosingQE[R, At + 2], Hi, Lvl]
           case _ => IsPiped[R, At + 2, Hi, Lvl]
-        case "[" => IsPiped[R, ToClosingBracket[R, At + 1, 0], Hi, Lvl]
-        case "(" => IsPiped[R, ToClosingParenthesis[R, At + 1, 0], Hi, Lvl + 1]
-        case "|" => 1
-        case ")" => 0
+        case '[' => IsPiped[R, ToClosingBracket[R, At + 1, 0], Hi, Lvl]
+        case '(' => IsPiped[R, ToClosingParenthesis[R, At + 1, 0], Hi, Lvl + 1]
+        case '|' => 1
+        case ')' => 0
         case _ => IsPiped[R, At + 1, Hi, Lvl]
 
   type ToClosingParenthesis[R <: String, At <: Int, Lvl <: Int] <: Int =
     CharAt[R, At] match
-      case "\\" => CharAt[R, At + 1] match
-        case "Q" => ToClosingParenthesis[R, ToClosingQE[R, At + 2], Lvl]
+      case '\\' => CharAt[R, At + 1] match
+        case 'Q' => ToClosingParenthesis[R, ToClosingQE[R, At + 2], Lvl]
         case _ => ToClosingParenthesis[R, At + 2, Lvl]
-      case "[" => ToClosingParenthesis[R, ToClosingBracket[R, At + 1, 0], Lvl]
-      case ")" => Lvl match
+      case '[' => ToClosingParenthesis[R, ToClosingBracket[R, At + 1, 0], Lvl]
+      case ')' => Lvl match
         case 0 => At + 1
         case _ => ToClosingParenthesis[R, At + 1, Lvl - 1]
-      case "(" => ToClosingParenthesis[R, At + 1, Lvl + 1]
+      case '(' => ToClosingParenthesis[R, At + 1, Lvl + 1]
       case _   => ToClosingParenthesis[R, At + 1, Lvl]
 
   type ToClosingBracket[R <: String, At <: Int, Lvl <: Int] <: Int =
     CharAt[R, At] match
-      case "\\" => CharAt[R, At + 1] match
-        case "Q" => ToClosingBracket[R, ToClosingQE[R, At + 2], Lvl]
+      case '\\' => CharAt[R, At + 1] match
+        case 'Q' => ToClosingBracket[R, ToClosingQE[R, At + 2], Lvl]
         case _ => ToClosingBracket[R, At + 2, Lvl]
-      case "[" => ToClosingBracket[R, At + 1, Lvl + 1]
-      case "]" => Lvl match
+      case '[' => ToClosingBracket[R, At + 1, Lvl + 1]
+      case ']' => Lvl match
         case 0 => At + 1
         case _ => ToClosingBracket[R, At + 1, Lvl - 1]
       case _ => ToClosingBracket[R, At + 1, Lvl]
 
   type ToClosingQE[R <: String, At <: Int] <: Int =
     CharAt[R, At] match
-      case "\\" => CharAt[R, At + 1] match
-        case "E" => At + 2
+      case '\\' => CharAt[R, At + 1] match
+        case 'E' => At + 2
         case _ => ToClosingQE[R, At + 2]
       case _ => ToClosingQE[R, At + 1]
 
