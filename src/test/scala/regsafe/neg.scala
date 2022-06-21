@@ -1,7 +1,6 @@
 import regsafe._
 import scala.annotation.experimental
 
-@experimental
 object Foo {
   val date = Regex("""(\d{4})-(\d{2})-(\d{2})""")
 
