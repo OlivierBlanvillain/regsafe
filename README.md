@@ -8,7 +8,7 @@ The Regsafe API mimics Scala's original regex APIs and is intended to be usable 
 The original implementation of this library is thoroughly documented in a [Scala Symposium paper](sigplan.pdf).
 
 ```scala
-"in.nvilla" %% "regsafe" % "0.0.0"
+"in.nvilla" %% "regsafe" % "0.0.1"
 ```
 
 # The Goodies
